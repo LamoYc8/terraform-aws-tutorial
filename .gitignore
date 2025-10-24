@@ -1,2 +1,12 @@
+# credential inform
 tf-demo_*
+
+# tf state files, in best practice this will be stored in DynamoDB with lock
+*.tfstate
+*.tfstate.*
+
+# local .terraform dir
 .terraform/
+
+# var files
+*.tfvars
