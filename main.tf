@@ -67,5 +67,45 @@ resource "aws_default_route_table" "main_rtb" {
   }
 }
 
+# creating firewall rules for the demo vpc
+# adding ingres and egress traffic rules
+# allowing ssh and nginx access 
+resource "aws_security_group" "myapp_sg" {
+  name = "allow_ssh&nginx"
+
+  description = "Allow ssh and nginx inbound traffic and all outbound traffic"
+  vpc_id = aws_vpc.myapp_vpc.id  
+
+  tags = {
+    Name = "${var.env_prefix}-sg"
+  }
+  
+}
+
+# latest practice: one CIDR block per rule
+resource "aws_vpc_security_group_ingress_rule" "allow_ssh" {
+  security_group_id = aws_security_group.myapp_sg.id 
+  cidr_ipv4 = var.my_ip
+  ip_protocol = "tcp"
+  from_port = 22 # can be a range, if only needs one, then setting from and to the same value
+  to_port = 22
+  
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_nginx" {
+  security_group_id = aws_security_group.myapp_sg.id
+  cidr_ipv4 = "0.0.0.0/0" # everyone from the browser to access it
+  ip_protocol = "tcp"
+  from_port = 8080
+  to_port = 8080
+  
+}
 
 
+resource "aws_vpc_security_group_egress_rule" "name" {
+  security_group_id = aws_security_group.myapp_sg.id
+  cidr_ipv4 = "0.0.0.0/0"
+  ip_protocol = "-1" # no limitation for protocol
+  # semantically equivalent to all ports
+  
+}
