@@ -22,6 +22,10 @@ variable "my_ip" {
 
 }
 
+variable "pb_key_location" {
+  
+}
+
 resource "aws_vpc" "myapp_vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
@@ -144,5 +148,19 @@ resource "aws_instance" "myapp_ec2" {
   availability_zone = var.avail_zone
 
   associate_public_ip_address = true # a public ip address to access from the Internet
-  key_name = "server-key-pair" # using existing key pair to ssh to the server 
+  key_name = aws_key_pair.ssh_key.key_name # using existing key pair to ssh to the server 
+}
+
+# aws key pair
+resource "aws_key_pair" "ssh_key" {
+  key_name = "key-demo"
+  public_key = file(var.pb_key_location) # read the file which contains pb key inform
+  # aws will use this pb key to encrypt data
+  
+}
+
+# print out the pb ip of the above instance 
+output "ec2_pb_ip" {
+  value = aws_instance.myapp_ec2.public_ip
+  
 }
