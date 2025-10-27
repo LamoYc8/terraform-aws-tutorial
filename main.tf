@@ -149,6 +149,10 @@ resource "aws_instance" "myapp_ec2" {
 
   associate_public_ip_address = true # a public ip address to access from the Internet
   key_name = aws_key_pair.ssh_key.key_name # using existing key pair to ssh to the server 
+
+  # cmd which will be executed after the server is initiated
+  # <<-EOF 模版缩进
+  user_data = file("entry-script.sh")
 }
 
 # aws key pair
