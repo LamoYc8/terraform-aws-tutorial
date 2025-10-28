@@ -1,31 +1,31 @@
 # only contain resource in this file
-resource "aws_vpc" "myapp_vpc" {
-  cidr_block = var.vpc_cidr_block
-  tags = {
-    Name = "${var.env_prefix}-vpc" # apply var inside a string  
+
+# using aws provided module vpc
+module "vpc" {
+  # online address
+  source = "terraform-aws-modules/vpc/aws"
+
+  name = "my-vpc"
+  cidr = var.vpc_cidr_block
+
+  azs             = [var.avail_zone]
+  public_subnets  = [var.subnet_cidr_block]
+  public_subnet_tags = {
+    Name = "${var.env_prefix}-subnet-1"
   }
 
+  tags = {
+    Name = "${var.env_prefix}-vpc"
+  }
 }
 
 
-module "myapp_subnet" {
-  # source --> location
-  source = "./modules/subnet"
-
-  # passing all parameters
-  vpc_id = aws_vpc.myapp_vpc.id
-  avail_zone = var.avail_zone
-  env_prefix = var.env_prefix
-  subnet_cidr_block = var.subnet_cidr_block
-  default_route_table_id = aws_vpc.myapp_vpc.default_route_table_id
-
-}
 
 module "myapp_ec2" {
   source = "./modules/webserver"
 
-  vpc_id = aws_vpc.myapp_vpc.id
-  subnet_id = module.myapp_subnet.subnet.id
+  vpc_id = module.vpc.vpc_id
+  subnet_id = module.vpc.public_subnets[0]
 
   avail_zone = var.avail_zone
   env_prefix = var.env_prefix
