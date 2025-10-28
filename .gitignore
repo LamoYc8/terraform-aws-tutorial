@@ -10,3 +10,6 @@ tf-demo_*
 
 # var files
 *.tfvars
+
+# ignore crash logs
+crash.log
