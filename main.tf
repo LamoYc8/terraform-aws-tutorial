@@ -1,5 +1,20 @@
 # only contain resource in this file
 
+# terraform init each time whenever it modified
+terraform {
+  # config terraform metadata and inform 
+  required_version = ">= 1.13"
+
+  # determinate how state is loaded/stored
+  # default will be local storage
+  backend "s3" {
+    bucket = "tf-demo-myapp"
+    key = "myapp/state.tfstate" # the path inside the bucket. can be a file structure
+    region = "ap-southeast-1"
+    
+  }
+}
+
 # using aws provided module vpc
 module "vpc" {
   # online address
