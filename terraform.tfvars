@@ -1,7 +1,0 @@
-vpc_cidr_block = "10.0.0.0/16"
-subnet_cidr_block = "10.0.10.0/24"
-avail_zone = "ap-southeast-1a"
-env_prefix = "dev"
-my_ip = "171.213.48.3/32"
-pb_key_location = "/Users/mayc98/.ssh/id_ed25519.pub"
-# instance_type = "t2.micro"
